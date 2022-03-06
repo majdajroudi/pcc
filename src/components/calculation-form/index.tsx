@@ -26,7 +26,8 @@ export default function CalculationForm() {
         area: yup.number().required()
     })
 
-    const handleSubmit: any = (values: any) => {
+    const handleSubmit: any = (values: any, { ...rest }) => {
+        console.log("rest", values)
         const requiredRedecorations = Math.floor(REDECORATION_SPAN / values.product.redecorationCycle);
         const cycleCost = roundNumber(values.area * values.product.price * values.sector.costMultiplier)
         const totalCost = roundNumber(cycleCost * requiredRedecorations)
@@ -43,11 +44,11 @@ export default function CalculationForm() {
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
                     >
-                        {({ errors, values, setFieldValue }) => {
+                        {({ errors, values, setFieldValue, isValid, handleReset, dirty }) => {
                             return (
-                                <Form >
-                                    <div className="d-flex flex-row w-100">
-                                        <div className="w-75 d-flex justify-space-around flex-column">
+                                <Form className="w-100">
+                                    <div className="d-flex flex-row w-100 justify-content-center">
+                                        <div className="w-75 d-flex justify-space-around align-items-center flex-column">
                                             <Field name="sector">
                                                 {(formProps: any) => (
                                                     <DropdownMenu items={data.sectors}
@@ -84,7 +85,7 @@ export default function CalculationForm() {
 
                                             <Field name="area" >
                                                 {() => (
-                                                    <FormControl className="w-100 m-2">
+                                                    <FormControl className="w-100 m-2 d-flex align-items-center">
                                                         <TextField
                                                             className="w-75"
                                                             label="Painting area"
@@ -104,7 +105,10 @@ export default function CalculationForm() {
                                     </div>
 
                                     <div className="w-100 d-flex justify-content-end m-2 px-5">
-                                        <Button type="submit" variant="contained" color="primary">
+                                        <Button className="me-2" variant="outlined" color="primary" onClick={handleReset} >
+                                            Clear
+                                        </Button>
+                                        <Button className="ms-2" type="submit" variant="contained" color="primary" disabled={!dirty}>
                                             Submit
                                         </Button>
                                     </div>
