@@ -25,7 +25,7 @@ export default function DropdownMenu({ items, placeholder, disabled = false, for
                 onChange={(event) => setFieldValue(fieldName, event.target.value)}
                 disabled={disabled}
                 variant="outlined"
-                error={touched[fieldName] || errors[fieldName]}
+                error={errors[fieldName]}
             >
                 {
                     items.map((currItem, index) => (
