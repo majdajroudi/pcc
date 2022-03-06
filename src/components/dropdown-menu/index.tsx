@@ -13,7 +13,7 @@ interface IProps {
 
 export default function DropdownMenu({ items, placeholder, disabled = false, formProps }: IProps) {
     const fieldName = formProps.field.name;
-    const { errors, values, setFieldValue } = formProps.form;
+    const { errors, values, setFieldValue, touched } = formProps.form;
 
     return (
         <FormControl className="w-100 m-2 align-items-center">
@@ -28,6 +28,7 @@ export default function DropdownMenu({ items, placeholder, disabled = false, for
                 disabled={disabled}
                 variant="outlined"
                 error={!!errors[fieldName]}
+                helperText={touched[fieldName] && errors[fieldName]}
             >
                 {
                     items.map((currItem, index) => (

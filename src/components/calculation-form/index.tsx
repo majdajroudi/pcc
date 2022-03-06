@@ -28,11 +28,11 @@ export default function CalculationForm() {
     const initialValues: IValues = { sector: {}, product: {}, colour: {}, type: {}, area: 0 }
 
     const validationSchema = yup.object().shape({
-        sector: yup.object().required(),
-        type: yup.object().required(),
-        product: yup.object().required(),
-        colour: yup.object().required(),
-        area: yup.number().required()
+        sector: yup.object().required("Required"),
+        type: yup.object().required("Required"),
+        product: yup.object().required("Required"),
+        colour: yup.object().required("Required"),
+        area: yup.number().required("Required")
     })
 
     const handleSubmit: any = (values: any) => {
@@ -52,7 +52,7 @@ export default function CalculationForm() {
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
                     >
-                        {({ errors, values, setFieldValue, handleReset, dirty }) => {
+                        {({ errors, values, setFieldValue, handleReset, dirty, touched }) => {
                             return (
                                 <Form className="w-100">
                                     <div className="d-flex flex-row w-100 justify-content-center">
@@ -103,6 +103,7 @@ export default function CalculationForm() {
                                                             value={values.area}
                                                             onChange={e => setFieldValue("area", e.target.value)}
                                                             error={!!errors?.area}
+                                                            helperText={touched?.area && errors?.area}
                                                         />
                                                     </FormControl>
 
