@@ -36,7 +36,7 @@ export default function CalculationForm() {
     }
 
     return (
-        <div className="w-50">
+        <div className="w-lg-50 w-md-75">
             <Card className=" mt-3">
                 <CardHeader title="Calculation Form">Calculation Form</CardHeader>
                 <CardContent>
