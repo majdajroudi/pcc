@@ -7,6 +7,7 @@ import * as yup from "yup"
 import { Formik, Form, Field } from "formik"
 import { sectorToType } from "../../utils/sector-to-type"
 import { sectorToProduct } from "../../utils/sector-to-products"
+import { roundNumber } from "../../utils/round-number"
 
 /** Redecoration is required for the period of *REDECORATION_SPAN* years */
 const REDECORATION_SPAN = 30
@@ -15,7 +16,7 @@ export default function CalculationForm() {
     const [result, setResult] = useState<any>({
         submitted: false
     })
-    const initialValues: any = { sector: {}, product: {}, colour: {}, type: {}, area: null }
+    const initialValues: any = { sector: {}, product: {}, colour: {}, type: {}, area: 0 }
 
     const validationSchema = yup.object().shape({
         sector: yup.object().required(),
@@ -27,9 +28,10 @@ export default function CalculationForm() {
 
     const handleSubmit: any = (values: any) => {
         const requiredRedecorations = Math.floor(REDECORATION_SPAN / values.product.redecorationCycle);
-        const cycleCost = values.area * values.product.price * values.sector.costMultiplier
+        const cycleCost = roundNumber(values.area * values.product.price * values.sector.costMultiplier)
+        const totalCost = roundNumber(cycleCost * requiredRedecorations)
 
-        setResult({ submitted: true, cycleCost, totalCost: cycleCost * requiredRedecorations })
+        setResult({ submitted: true, cycleCost, totalCost })
     }
 
     return (
@@ -91,7 +93,7 @@ export default function CalculationForm() {
                                                             type="number"
                                                             value={values.area}
                                                             onChange={e => setFieldValue("area", e.target.value)}
-
+                                                            error={!!errors?.area}
                                                         />
                                                     </FormControl>
 
