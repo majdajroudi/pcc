@@ -1,18 +1,19 @@
-import React, { useState } from "react"
-import { Select, MenuItem, TextField, InputLabel, ListItemText, FormControl } from "@mui/material";
+import React from "react"
+import { MenuItem, TextField, FormControl } from "@mui/material";
+import { FieldProps } from "formik"
 import "./index.css"
 
 interface IProps {
     items: any[];
     placeholder: string;
     disabled?: boolean;
-    formProps?: any;
+    formProps: FieldProps;
 }
 
 
 export default function DropdownMenu({ items, placeholder, disabled = false, formProps }: IProps) {
     const fieldName = formProps.field.name;
-    const { errors, values, setFieldValue, touched } = formProps.form;
+    const { errors, values, setFieldValue } = formProps.form;
 
     return (
         <FormControl className="w-100 m-2 align-items-center">
@@ -26,7 +27,7 @@ export default function DropdownMenu({ items, placeholder, disabled = false, for
                 onChange={(event) => setFieldValue(fieldName, event.target.value)}
                 disabled={disabled}
                 variant="outlined"
-                error={errors[fieldName]}
+                error={!!errors[fieldName]}
             >
                 {
                     items.map((currItem, index) => (

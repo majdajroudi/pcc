@@ -1,22 +1,31 @@
-import React, { useState, useMemo } from "react"
-import { Card, CardHeader, CardContent, TextField, Button, CardActionArea, FormControl } from "@mui/material"
+import React, { useState } from "react"
+import { Card, CardHeader, CardContent, TextField, Button, FormControl } from "@mui/material"
 import DropdownMenu from "../dropdown-menu"
 import data from "../../data/frontend_developer_practice.json"
-import "./index.css"
 import * as yup from "yup"
 import { Formik, Form, Field } from "formik"
 import { sectorToType } from "../../utils/sector-to-type"
 import { sectorToProduct } from "../../utils/sector-to-products"
 import { roundNumber } from "../../utils/round-number"
+import { ISector, IProduct, IColour, IProjectType } from "../../models"
+import "./index.css"
 
 /** Redecoration is required for the period of *REDECORATION_SPAN* years */
 const REDECORATION_SPAN = 30
+
+interface IValues {
+    sector: ISector;
+    product: IProduct;
+    colour: IColour;
+    type: IProjectType;
+    area: number;
+}
 
 export default function CalculationForm() {
     const [result, setResult] = useState<any>({
         submitted: false
     })
-    const initialValues: any = { sector: {}, product: {}, colour: {}, type: {}, area: 0 }
+    const initialValues: IValues = { sector: {}, product: {}, colour: {}, type: {}, area: 0 }
 
     const validationSchema = yup.object().shape({
         sector: yup.object().required(),
@@ -26,8 +35,7 @@ export default function CalculationForm() {
         area: yup.number().required()
     })
 
-    const handleSubmit: any = (values: any, { ...rest }) => {
-        console.log("rest", values)
+    const handleSubmit: any = (values: any) => {
         const requiredRedecorations = Math.floor(REDECORATION_SPAN / values.product.redecorationCycle);
         const cycleCost = roundNumber(values.area * values.product.price * values.sector.costMultiplier)
         const totalCost = roundNumber(cycleCost * requiredRedecorations)
@@ -44,7 +52,7 @@ export default function CalculationForm() {
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
                     >
-                        {({ errors, values, setFieldValue, isValid, handleReset, dirty }) => {
+                        {({ errors, values, setFieldValue, handleReset, dirty }) => {
                             return (
                                 <Form className="w-100">
                                     <div className="d-flex flex-row w-100 justify-content-center">
