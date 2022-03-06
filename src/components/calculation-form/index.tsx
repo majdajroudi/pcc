@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState, useMemo } from "react"
 import { Card, CardHeader, CardContent, TextField, Button, CardActionArea, FormControl } from "@mui/material"
 import DropdownMenu from "../dropdown-menu"
 import data from "../../data/frontend_developer_practice.json"
@@ -8,8 +8,13 @@ import { Formik, Form, Field } from "formik"
 import { sectorToType } from "../../utils/sector-to-type"
 import { sectorToProduct } from "../../utils/sector-to-products"
 
-export default function CalculationForm() {
+/** Redecoration is required for the period of *REDECORATION_SPAN* years */
+const REDECORATION_SPAN = 30
 
+export default function CalculationForm() {
+    const [result, setResult] = useState<any>({
+        submitted: false
+    })
     const initialValues: any = { sector: {}, product: {}, colour: {}, type: {}, area: null }
 
     const validationSchema = yup.object().shape({
@@ -20,85 +25,106 @@ export default function CalculationForm() {
         area: yup.number().required()
     })
 
+    const handleSubmit: any = (values: any) => {
+        const requiredRedecorations = Math.floor(REDECORATION_SPAN / values.product.redecorationCycle);
+        const cycleCost = values.area * values.product.price * values.sector.costMultiplier
+
+        setResult({ submitted: true, cycleCost, totalCost: cycleCost * requiredRedecorations })
+    }
+
     return (
-        <Card className="form-card mt-3">
-            <CardHeader title="Calculation Form">Calculation Form</CardHeader>
-            <CardContent>
-                <Formik initialValues={initialValues}
-                    validationSchema={validationSchema}
-                    onSubmit={() => console.log("submitted")}
-                >
-                    {({ errors, values, setFieldValue }) => {
-                        return (
-                            <Form >
-                                <div className="d-flex flex-row w-100">
-                                    <div className="w-75 d-flex justify-space-around flex-column">
-                                        <Field name="sector">
-                                            {(formProps: any) => (
-                                                <DropdownMenu items={data.sectors}
-                                                    formProps={formProps}
-                                                    placeholder="Sectors" />
-                                            )}
-                                        </Field>
-                                        <Field name="colour">
-                                            {(formProps: any) => (
-                                                <DropdownMenu items={data.colour}
-                                                    formProps={formProps}
-                                                    placeholder="Colours" />
-                                            )}
-                                        </Field>
+        <div className="w-50">
+            <Card className=" mt-3">
+                <CardHeader title="Calculation Form">Calculation Form</CardHeader>
+                <CardContent>
+                    <Formik initialValues={initialValues}
+                        validationSchema={validationSchema}
+                        onSubmit={handleSubmit}
+                    >
+                        {({ errors, values, setFieldValue }) => {
+                            return (
+                                <Form >
+                                    <div className="d-flex flex-row w-100">
+                                        <div className="w-75 d-flex justify-space-around flex-column">
+                                            <Field name="sector">
+                                                {(formProps: any) => (
+                                                    <DropdownMenu items={data.sectors}
+                                                        formProps={formProps}
+                                                        placeholder="Sectors" />
+                                                )}
+                                            </Field>
+                                            <Field name="colour">
+                                                {(formProps: any) => (
+                                                    <DropdownMenu items={data.colour}
+                                                        formProps={formProps}
+                                                        placeholder="Colours" />
+                                                )}
+                                            </Field>
+                                        </div>
+
+                                        <div className="w-75 d-flex justify-space-around flex-column">
+                                            <Field name="product">
+                                                {(formProps: any) => (
+                                                    <DropdownMenu items={sectorToProduct(values.sector?.name) || []}
+                                                        formProps={formProps}
+                                                        disabled={Object.keys(values.sector).length === 0}
+                                                        placeholder="Products" />
+                                                )}
+                                            </Field>
+                                            <Field name="type">
+                                                {(formProps: any) => (
+                                                    <DropdownMenu items={sectorToType(values.sector?.name) || []}
+                                                        formProps={formProps}
+                                                        disabled={Object.keys(values.sector).length === 0}
+                                                        placeholder="Project types" />
+                                                )}
+                                            </Field>
+
+                                            <Field name="area" >
+                                                {() => (
+                                                    <FormControl className="w-100 m-2">
+                                                        <TextField
+                                                            className="w-75"
+                                                            label="Painting area"
+                                                            placeholder="Painting area"
+                                                            size="small"
+                                                            type="number"
+                                                            value={values.area}
+                                                            onChange={e => setFieldValue("area", e.target.value)}
+
+                                                        />
+                                                    </FormControl>
+
+                                                )}
+                                            </Field>
+                                        </div>
+
                                     </div>
 
-                                    <div className="w-75 d-flex justify-space-around flex-column">
-                                        <Field name="product">
-                                            {(formProps: any) => (
-                                                <DropdownMenu items={sectorToProduct(values.sector?.name) || []}
-                                                    formProps={formProps}
-                                                    disabled={Object.keys(values.sector).length === 0}
-                                                    placeholder="Products" />
-                                            )}
-                                        </Field>
-                                        <Field name="type">
-                                            {(formProps: any) => (
-                                                <DropdownMenu items={sectorToType(values.sector?.name) || []}
-                                                    formProps={formProps}
-                                                    disabled={Object.keys(values.sector).length === 0}
-                                                    placeholder="Project types" />
-                                            )}
-                                        </Field>
-
-                                        <Field name="area" >
-                                            {() => (
-                                                <FormControl className="w-100 m-2">
-                                                    <TextField
-                                                        className="w-75"
-                                                        label="Painting area"
-                                                        placeholder="Painting area"
-                                                        size="small"
-                                                        type="number"
-                                                        value={values.area}
-                                                        onChange={e => setFieldValue("area", e.target.value)}
-
-                                                    />
-                                                </FormControl>
-
-                                            )}
-                                        </Field>
+                                    <div className="w-100 d-flex justify-content-end m-2 px-5">
+                                        <Button type="submit" variant="contained" color="primary">
+                                            Submit
+                                        </Button>
                                     </div>
 
-                                </div>
+                                </Form>)
+                        }}
 
-                                <div className="w-100 d-flex justify-content-end m-2 px-5">
-                                    <Button type="submit" variant="contained" color="primary">
-                                        Submit
-                                    </Button>
-                                </div>
+                    </Formik>
+                </CardContent>
+            </ Card >
 
-                            </Form>)
-                    }}
+            {result.submitted && (
+                <Card className="mt-3">
+                    <CardHeader title="Cost" />
 
-                </Formik>
-            </CardContent>
-        </ Card >
+                    <CardContent>
+                        <p>cycle cost: {result.cycleCost}</p>
+                        <p>total cost over {REDECORATION_SPAN} years: {result.totalCost}</p>
+                    </CardContent>
+                </Card>
+            )}
+
+        </div>
     )
 }
