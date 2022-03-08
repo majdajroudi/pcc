@@ -44,8 +44,8 @@ export default function CalculationForm() {
     }
 
     return (
-        <div className="w-lg-50 w-md-75">
-            <Card className=" mt-3">
+        <div className="col-md-8 col-sm-12">
+            <Card className="mt-3">
                 <CardHeader title="Calculation Form">Calculation Form</CardHeader>
                 <CardContent>
                     <Formik initialValues={initialValues}
@@ -55,7 +55,7 @@ export default function CalculationForm() {
                         {({ errors, values, setFieldValue, handleReset, dirty, touched }) => {
                             return (
                                 <Form className="w-100">
-                                    <div className="d-flex flex-row w-100 justify-content-center">
+                                    <div className="d-flex flex-column  w-100 justify-content-center">
                                         <div className="w-75 d-flex justify-space-around align-items-center flex-column">
                                             <Field name="sector">
                                                 {(formProps: any) => (
@@ -133,9 +133,13 @@ export default function CalculationForm() {
                 <Card className="mt-3">
                     <CardHeader title="Cost" />
 
-                    <CardContent>
-                        <p>cycle cost: {result.cycleCost}</p>
-                        <p>total cost over {REDECORATION_SPAN} years: {result.totalCost}</p>
+                    <CardContent className="d-flex flex-column align-items-start ms-4">
+                        <p>
+                            <strong>Cost of one cycle:</strong> {result.cycleCost}
+                        </p>
+                        <p>
+                            <strong>Total cost over {REDECORATION_SPAN} years:</strong> {result.totalCost}
+                        </p>
                     </CardContent>
                 </Card>
             )}
