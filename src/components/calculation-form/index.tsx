@@ -55,8 +55,8 @@ export default function CalculationForm() {
                         {({ errors, values, setFieldValue, handleReset, dirty, touched }) => {
                             return (
                                 <Form className="w-100">
-                                    <div className="d-flex flex-column  w-100 justify-content-center">
-                                        <div className="w-75 d-flex justify-space-around align-items-center flex-column">
+                                    <div className="d-flex flex-column flex-md-row w-100 justify-content-center align-items-center align-items-md-start">
+                                        <div className="w-75 ms-3 ms-md-0 d-flex justify-space-around align-items-center flex-column">
                                             <Field name="sector">
                                                 {(formProps: any) => (
                                                     <DropdownMenu items={data.sectors}
